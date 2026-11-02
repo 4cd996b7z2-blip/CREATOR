@@ -1,69 +1,111 @@
-import Image from "next/image";
+import { BadgeCheck, IndianRupee, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { CreatorCard } from "@/components/CreatorCard";
+import { getI18n } from "@/lib/i18n-server";
+import { getStore } from "@/lib/store";
 
-export default function Home() {
+export default async function Home() {
+  const { t } = await getI18n();
+  const creators = await getStore().listVerified({ limit: 6, sort: "followers" });
+
+  const steps = [
+    { n: 1, title: t("how1_t"), body: t("how1_d") },
+    { n: 2, title: t("how2_t"), body: t("how2_d") },
+    { n: 3, title: t("how3_t"), body: t("how3_d") },
+  ];
+  const trust = [
+    { icon: ShieldCheck, text: t("trust1") },
+    { icon: IndianRupee, text: t("trust2") },
+    { icon: BadgeCheck, text: t("trust3") },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section className="bandhani text-white">
+        <div className="mx-auto max-w-5xl px-4 pb-14 pt-10 md:pb-20 md:pt-16">
+          <div className="max-w-xl">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-marigold/60 px-3.5 py-1 text-[0.95rem] font-bold text-marigold">
+              <ShieldCheck size={18} aria-hidden />
+              {t("hero_chip")}
+            </p>
+            <h1 className="text-[2.1rem] font-extrabold leading-[1.3] sm:text-5xl sm:leading-[1.25]">{t("hero_title")}</h1>
+            <p className="mt-5 max-w-lg text-lg text-white/85">{t("hero_sub")}</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/creators" className="btn btn-primary">
+                {t("cta_browse")}
+              </Link>
+              <Link
+                href="/register"
+                className="btn border-white/70 text-white hover:bg-white/10"
+              >
+                {t("cta_creator")}
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 pt-12">
+        <h2 className="text-2xl font-extrabold md:text-3xl">{t("how_title")}</h2>
+        <ol className="mt-6 grid gap-4 md:grid-cols-3">
+          {steps.map((s) => (
+            <li key={s.n} className="card flex gap-4 p-5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-marigold text-xl font-extrabold">
+                {s.n}
+              </span>
+              <div>
+                <h3 className="text-lg font-extrabold">{s.title}</h3>
+                <p className="mt-1 text-muted">{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <ul className="mt-6 grid gap-3 md:grid-cols-3">
+          {trust.map(({ icon: Icon, text }) => (
+            <li key={text} className="flex items-start gap-3 font-semibold">
+              <Icon size={24} className="mt-0.5 shrink-0 text-leaf" aria-hidden />
+              <span>{text}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 pt-14">
+        <h2 className="text-2xl font-extrabold md:text-3xl">{t("featured_title")}</h2>
+        {creators.length > 0 ? (
+          <>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {creators.map((c) => (
+                <CreatorCard key={c.id} c={c} />
+              ))}
+            </div>
+            <div className="mt-8">
+              <Link href="/creators" className="btn btn-dark">
+                {t("see_all")}
+              </Link>
+            </div>
+          </>
+        ) : (
+          <p className="card mt-6 p-6 text-lg font-semibold text-muted">{t("featured_empty")}</p>
+        )}
+      </section>
+
+      <section className="mx-auto mt-14 max-w-5xl px-4">
+        <div className="rounded-[1.75rem] bg-marigold p-6 md:flex md:items-center md:justify-between md:gap-10 md:p-10">
+          <div className="max-w-md">
+            <h2 className="text-2xl font-extrabold md:text-3xl">{t("creator_band_title")}</h2>
+            <p className="mt-2 text-lg">{t("creator_band_sub")}</p>
+            <ul className="mt-4 space-y-1.5 font-bold">
+              <li>✓ {t("creator_step1")}</li>
+              <li>✓ {t("creator_step2")}</li>
+              <li>✓ {t("creator_step3")}</li>
+            </ul>
+          </div>
+          <Link href="/register" className="btn btn-dark mt-6 w-full md:mt-0 md:w-auto md:shrink-0">
+            {t("nav_join")}
+          </Link>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }
