@@ -1,10 +1,11 @@
+import { isHosted } from "./host";
 import { memoryStore } from "./store-memory";
 import { supabaseStore } from "./store-supabase";
 import type { Store } from "./store-types";
 
-/** Local testing only. Never active on Vercel, even if the variable is set by mistake. */
+/** Local testing only. Never active on a live host, or when real database keys are present. */
 export function isMock() {
-  return process.env.USE_MOCK_DB === "1" && !process.env.VERCEL;
+  return process.env.USE_MOCK_DB === "1" && !isHosted() && !process.env.SUPABASE_SERVICE_ROLE_KEY;
 }
 
 export function isConfigured() {

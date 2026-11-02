@@ -18,8 +18,8 @@ function LoginScreen({ error }: { error?: string }) {
       <h1 className="text-2xl font-extrabold">Admin</h1>
       {!adminEnabled() ? (
         <p className="form-error mt-4">
-          ADMIN_PASSWORD is not set (or shorter than 6 characters). Add it in Vercel → Settings → Environment
-          Variables, then redeploy.
+          ADMIN_PASSWORD is not set (or shorter than 6 characters). Add it under Environment variables in your
+          hosting dashboard (Netlify or Vercel), then redeploy.
         </p>
       ) : (
         <form action={adminLogin} className="card mt-4 space-y-4 p-5">

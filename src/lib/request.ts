@@ -2,6 +2,9 @@ import { headers } from "next/headers";
 
 export async function getClientIp(): Promise<string> {
   const h = await headers();
+  // Netlify puts the visitor's address in x-nf-client-connection-ip; Vercel and others use x-forwarded-for.
+  const nf = h.get("x-nf-client-connection-ip");
+  if (nf) return nf.trim();
   const fwd = h.get("x-forwarded-for");
   if (fwd) return fwd.split(",")[0]!.trim();
   return h.get("x-real-ip") || "unknown";

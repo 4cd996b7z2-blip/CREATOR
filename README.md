@@ -21,23 +21,31 @@ Gujarati and English, Gujarati by default (switch in the header). Built with Nex
    - **Project URL** (looks like `https://abcdxyz.supabase.co`)
    - the **service_role** key (new projects call it the **secret** key). Keep it private. Never put it in the browser or share it.
 
-### 2. Vercel (the website)
+### 2. The website host (pick one)
 
-1. Push this repo to GitHub (already done if you are reading this there).
-2. Go to <https://vercel.com/new> → **Import** this repository. Leave the framework as **Next.js**.
-3. Open **Environment Variables** and add:
+Environment variables to add on whichever host you use:
 
-   | Name | Value |
-   |---|---|
-   | `SUPABASE_URL` | the Project URL from step 1.3 |
-   | `SUPABASE_SERVICE_ROLE_KEY` | the service_role / secret key from step 1.3 |
-   | `ADMIN_PASSWORD` | a long password (12+ characters) for `/admin` |
-   | `NEXT_PUBLIC_PLATFORM_IG` | your Instagram handle without `@`. Creators send their code here |
-   | `NEXT_PUBLIC_SITE_NAME` | the site name you want shown, e.g. `Rajkot Creators` |
+| Name | Value |
+|---|---|
+| `SUPABASE_URL` | the Project URL from step 1.3 |
+| `SUPABASE_SERVICE_ROLE_KEY` | the service_role / secret key from step 1.3 (mark it **secret** if the host offers that) |
+| `ADMIN_PASSWORD` | a long password (12+ characters) for `/admin` |
+| `NEXT_PUBLIC_PLATFORM_IG` | your Instagram handle without `@`. Creators send their code here |
+| `NEXT_PUBLIC_SITE_NAME` | the site name you want shown, e.g. `Rajkot Creators` |
 
-4. Press **Deploy**. When it finishes you have a live `*.vercel.app` link.
+**Netlify** (works with a GitHub login, no email code):
 
-If you forget a variable, the site shows a "Setup is not finished" page listing what is missing. Add it under **Settings → Environment Variables** and redeploy.
+1. <https://app.netlify.com/signup> → **Sign up with GitHub**.
+2. **Add new site → Import an existing project → GitHub**, pick this repository. If it is not listed, press **Configure the Netlify app on GitHub** and give it access to the repo.
+3. Leave the build settings as detected (`netlify.toml` already pins Node 22). Open **Environment variables** and add the 5 above.
+4. Press **Deploy**. You get a live `*.netlify.app` link in a few minutes.
+
+**Vercel**:
+
+1. <https://vercel.com/new> → **Import** this repository. Leave the framework as **Next.js**.
+2. Add the 5 environment variables, then press **Deploy**. You get a live `*.vercel.app` link.
+
+If you forget a variable, the site shows a "Setup is not finished" page listing what is missing. Add it in the host's *Environment variables* settings and redeploy (on Netlify: **Deploys → Trigger deploy → Deploy site**).
 
 ### 3. First-day checklist
 
@@ -62,14 +70,14 @@ cp .env.example .env.local     # fill in, or use the fake-data mode below
 USE_MOCK_DB=1 ADMIN_PASSWORD=test-admin npm run dev
 ```
 
-`USE_MOCK_DB=1` uses an in-memory fake database with demo creators (login `rajkot_foodie` / `demo1234`). It is ignored on Vercel, so it can never run in production.
+`USE_MOCK_DB=1` uses an in-memory fake database with demo creators (login `rajkot_foodie` / `demo1234`). It is ignored on any live host (and whenever a Supabase key is set), so it can never run in production.
 
 ## Things to know
 
 - **Passwords:** stored with bcrypt. There is no email on file, so a forgotten password is reset by you manually (delete the account and let them re-register, or ask Claude to add a reset command).
 - **Spam protection without OTP:** hidden honeypot field, minimum fill time, 5 enquiries per hour per device, phone-number format check, consent tick-box. Add phone OTP later if spam appears.
 - **Security model:** the browser never talks to the database. All reads and writes go through the server with the service-role key, and both tables have row-level security on with no public policies.
-- **Free-tier limits:** Vercel **Hobby is for non-commercial use only**. Move to Pro before you take money or run ads. Supabase free pauses a project after about a week with no activity (just press *Restore* in the dashboard), so upgrade once real users depend on it.
+- **Free-tier limits:** Vercel **Hobby is for non-commercial use only**; check Netlify's current free-plan terms the same way. Upgrade the host before you take money or run ads. Supabase free pauses a project after about a week with no activity (just press *Restore* in the dashboard), so upgrade once real users depend on it.
 - **Gujarati copy** is in `src/lib/dict.ts`. Have a native speaker read it before launch. Prices of options, niches and budgets are in `src/lib/constants.ts`.
 - **Default language:** Gujarati. Set `NEXT_PUBLIC_DEFAULT_LANG=en` to default to English.
 

@@ -9,8 +9,9 @@ export function SetupIncomplete() {
     <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center gap-5 px-5 py-10">
       <h1 className="text-3xl font-extrabold">Setup is not finished</h1>
       <p>
-        The site is deployed, but it cannot reach its database yet. Add these environment variables in Vercel
-        (Project → Settings → Environment Variables), then redeploy:
+        The site is deployed, but it cannot reach its database yet. Add these environment variables in your hosting
+        dashboard (Netlify: Site configuration → Environment variables. Vercel: Settings → Environment Variables),
+        then redeploy:
       </p>
       <ul className="card divide-y divide-line">
         {need.map((n) => (

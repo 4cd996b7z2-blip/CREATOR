@@ -1,4 +1,4 @@
-// In-memory database used ONLY for local testing (USE_MOCK_DB=1, never on Vercel).
+// In-memory database used ONLY for local testing (USE_MOCK_DB=1, never on a live host).
 import bcrypt from "bcryptjs";
 import type { AuthRow, Store } from "./store-types";
 import type { Creator, Enquiry, ListOpts, PublicCreator } from "./types";

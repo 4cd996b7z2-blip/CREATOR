@@ -1,7 +1,8 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { isHosted } from "./host";
 import { getStore } from "./store";
 import type { Creator } from "./types";
 
@@ -45,11 +46,14 @@ function verify<T extends { exp: number }>(token: string | undefined): T | null 
   }
 }
 
-function cookieOpts(maxAgeSeconds: number) {
+/** Cookies are marked Secure whenever the visitor reached us over https (works on any host). */
+async function cookieOpts(maxAgeSeconds: number) {
+  const proto = (await headers()).get("x-forwarded-proto");
+  const secure = proto ? proto.split(",")[0]!.trim() === "https" : isHosted();
   return {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: Boolean(process.env.VERCEL),
+    secure,
     path: "/",
     maxAge: maxAgeSeconds,
   };
@@ -59,7 +63,7 @@ function cookieOpts(maxAgeSeconds: number) {
 
 export async function startCreatorSession(id: string) {
   const exp = Date.now() + CREATOR_DAYS * 86400_000;
-  (await cookies()).set(CREATOR_COOKIE, sign({ sub: id, exp }), cookieOpts(CREATOR_DAYS * 86400));
+  (await cookies()).set(CREATOR_COOKIE, sign({ sub: id, exp }), await cookieOpts(CREATOR_DAYS * 86400));
 }
 
 export async function endCreatorSession() {
@@ -98,7 +102,7 @@ export function checkAdminPassword(input: string) {
 
 export async function startAdminSession() {
   const exp = Date.now() + ADMIN_HOURS * 3600_000;
-  (await cookies()).set(ADMIN_COOKIE, sign({ admin: true, exp }), cookieOpts(ADMIN_HOURS * 3600));
+  (await cookies()).set(ADMIN_COOKIE, sign({ admin: true, exp }), await cookieOpts(ADMIN_HOURS * 3600));
 }
 
 export async function endAdminSession() {

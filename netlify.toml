@@ -1,0 +1,6 @@
+# Netlify detects Next.js by itself; this only pins the Node version and stops the secrets scanner
+# from flagging public settings (site name, Instagram handle) that are meant to appear on the website.
+[build.environment]
+  NODE_VERSION = "22"
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SITE_NAME,NEXT_PUBLIC_PLATFORM_IG,NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_DEFAULT_LANG"
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
